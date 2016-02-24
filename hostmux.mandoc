@@ -11,6 +11,7 @@
 .Op Fl r Ar remote-host
 .Op Fl x
 .Op Fl h
+.Op Fl f Ar hosts-file
 .Op Ar host_a
 .Op Ar host_b
 .Op Ar host_n
@@ -40,12 +41,19 @@ Close the pane and/or session automatically when the ssh session
 session exits successfully
 .It Fl h
 Display usage information
+.It Fl f
+Specify a file to read ssh targets from. This can be used in addition to
+host specified as arguments on the command line.
 .It Ar host
 Specify a space separated list of one or more user@hostname ssh targets. This
 is what you would pass to the ssh command when you are connecting
 to a host. Currently there is no support for passing additional flags
 to ssh. If you do need them, add them to your ~/.ssh/config
 .El
+.Sh HOSTS FILE FORMAT
+The hosts file should contain one ssh target per line. The format and
+restrictiona sfor ssh targets are identical to those for hosts specified
+on the command line.
 .Sh SEE ALSO
 .Bl -tag -width Ds
 .It Xr tmux 1

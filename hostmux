@@ -13,7 +13,7 @@ LAYOUT=even-vertical
 CLOSE=
 
 # Get optional user settings
-while getopts :s:l:h:r:x opt
+while getopts :s:l:h:r:x:f opt
 do
 case $opt in
 s)     SESSION_NAME=$OPTARG
@@ -30,6 +30,8 @@ r)     RHOST=$OPTARG
        ;;
 x)     CLOSE=" && exit"
        ;;
+f)     HOSTS_FILE=$OPTARG
+       ;;
 '?')   echo "$0: invalid option -$OPTARG" >&2
        echo $USAGE >&2
        exit 1
@@ -41,7 +43,28 @@ echo $#
 echo $LAYOUT
 
 # The actual script
-NUMBER_OF_HOSTS=$#
+NUMBER_OF_HOSTS=0
+NUMBER_OF_HOST_ARGS=$#
+HOSTS=""
+
+# Add each remaining host argument to the HOSTS list
+while [ $NUMBER_OF_HOSTS -lt $NUMBER_OF_HOST_ARGS ]
+do
+  HOSTS="$HOSTS$1 "
+  NUMBER_OF_HOSTS=$(($NUMBER_OF_HOSTS+1))
+  shift
+done
+
+# add each line in the HOSTS_FILE to the HOSTS list
+if [ -n "$HOSTS_FILE" ]
+then
+  echo "parsing hosts file $HOSTS_FILE"
+  while read line
+  do
+    HOSTS="$HOSTS$line "
+    NUMBER_OF_HOSTS=$(($NUMBER_OF_HOSTS+1))
+  done < "$HOSTS_FILE"
+fi
 
 # Initialize Session
 # If we are already in a tmux session just use the current window
@@ -51,7 +74,7 @@ else
   tmux -2 new-session -d -s $SESSION_NAME
 fi
 
-# Split as many times as we have hosts as arguments and reset
+# Split as many times as we have hosts and reset
 # the layout each time for even distribution
 LOOP_INDEX=1
 
@@ -78,11 +101,10 @@ if [ "x$RHOST" != "x" ]; then
   SSHPRE="$SSHPRE -t -A $RHOST \"ssh"
   SSHPOST="$SSHPOST\"$SSHPOST"
 fi
-while [ $PANE_INDEX -le $PANE_MAX ]
+for host in $HOSTS
 do
-  tmux send-keys -t $PANE_INDEX "$SSHPRE $1$SSHPOST" C-m
+  tmux send-keys -t $PANE_INDEX "$SSHPRE $host$SSHPOST" C-m
 
-  shift
   PANE_INDEX=$(($PANE_INDEX+1))
 done
 

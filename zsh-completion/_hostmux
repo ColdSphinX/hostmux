@@ -6,6 +6,7 @@ _arguments -C \
   '*-l[Layout]:layouts:->layouts' \
   '*-s[Session Name]' \
   '*-x[Auto close pane]' \
+  '*-f[Hosts file]:hosts file:_files' \
   '*:destinations:->destinations' \
 && ret=0
 
