@@ -12,7 +12,7 @@ NAME
      panes
 
 SYNOPSIS
-     hostmux [-s session-name] [-l tmux-layout] [-x] [-r remote-host] [-h] [host_a] [host_b]
+     hostmux [-s session-name] [-l tmux-layout] [-x] [-r remote-host] [-h] [-f hostsfile] [host_a] [host_b]
              [host_n]
 
 DESCRIPTION
@@ -88,6 +88,12 @@ The manpage is written with mandoc and "rendered" to be legacy compatible using 
 
 ```
 mandoc -Tman hostmux.mandoc > man/hostmux.1
+```
+
+## nice functions or aliases
+```
+FOOHOSTS=(usr@hosta urs@hostb usr@hostc)
+alias cssh-foo="hostmux -l tiled -s usr@cluster-foo ${FOOHOSTS[@]}"
 ```
 
 ## Suggestions for Improvement?
