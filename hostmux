@@ -45,13 +45,13 @@ echo $LAYOUT
 # The actual script
 NUMBER_OF_HOSTS=0
 NUMBER_OF_HOST_ARGS=$#
-HOSTS=""
+HOSTS=()
 
 # Add each remaining host argument to the HOSTS list
 while [ $NUMBER_OF_HOSTS -lt $NUMBER_OF_HOST_ARGS ]
 do
-  HOSTS="$HOSTS$1 "
   NUMBER_OF_HOSTS=$(($NUMBER_OF_HOSTS+1))
+  HOSTS[$NUMBER_OF_HOSTS]=$1
   shift
 done
 
@@ -61,8 +61,8 @@ then
   echo "parsing hosts file $HOSTS_FILE"
   while read line
   do
-    HOSTS="$HOSTS$line "
     NUMBER_OF_HOSTS=$(($NUMBER_OF_HOSTS+1))
+    HOSTS[$NUMBER_OF_HOSTS]=$1line
   done < "$HOSTS_FILE"
 fi
 
@@ -101,7 +101,7 @@ if [ "x$RHOST" != "x" ]; then
   SSHPRE="$SSHPRE -t -A $RHOST \"ssh"
   SSHPOST="$SSHPOST\"$SSHPOST"
 fi
-for host in $HOSTS
+for host in ${HOSTS[@]}
 do
   tmux send-keys -t $PANE_INDEX "$SSHPRE $host$SSHPOST" C-m
 
