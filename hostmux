@@ -62,7 +62,7 @@ then
   while read line
   do
     NUMBER_OF_HOSTS=$(($NUMBER_OF_HOSTS+1))
-    HOSTS[$NUMBER_OF_HOSTS]=$1line
+    HOSTS[$NUMBER_OF_HOSTS]=$line
   done < "$HOSTS_FILE"
 fi
 
