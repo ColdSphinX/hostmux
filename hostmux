@@ -18,9 +18,10 @@ USAGE="hostmux [-h] [-x] [-l <tmux layout>] [-s <session name>] [-r <remote host
 SESSION_NAME=hostmux
 LAYOUT=even-vertical
 CLOSE=
+ENUM=false
 
 # Get optional user settings
-while getopts :s:l:h:r:x:f opt
+while getopts :s:l:h:r:x:f:n opt
 do
 case $opt in
 s)     SESSION_NAME=$OPTARG
@@ -38,6 +39,8 @@ r)     RHOST=$OPTARG
 x)     CLOSE=" && exit"
        ;;
 f)     HOSTS_FILE=$OPTARG
+       ;;
+n)     ENUM=true
        ;;
 '?')   echo "$0: invalid option -$OPTARG" >&2
        echo $USAGE >&2
@@ -73,6 +76,9 @@ then
   done < "$HOSTS_FILE"
 fi
 
+# enumerate the sessions so hostmux does not add hosts to a session with the same name
+# this is especially usefull if you use hostmux in shell aliases to have easy access to your clusters
+$ENUM && SESSION_NAME="$SESSION_NAME-$(tmux ls | grep $SESSION_NAME | wc -l)"
 # Initialize Session
 # If we are already in a tmux session just use the current window
 if [ "$TERM" = "screen" -a -n "$TMUX" ]; then
