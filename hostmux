@@ -84,7 +84,8 @@ if $ENUM ; then
   SESSION_NAME="${SESSION_BASE}-${SESSION_COUNT}"
   LIMIT=50
   i=0
-  while grep -q "$SESSION_NAME" <(tmux ls 2>&1)
+
+  while tmux ls 2>&1 | grep -q "$SESSION_NAME"
   do
     SESSION_COUNT=$(($SESSION_COUNT+1))
     SESSION_NAME="${SESSION_BASE}-${SESSION_COUNT}"
@@ -141,6 +142,6 @@ done
 
 # Attach to the session
 # But only if we are not already in a tmux session
-if ! ([[ $TERM =~ ^screen ]] && [ -n "$TMUX" ]); then
+if ! ( [[ $TERM =~ ^screen ]] && [ -n "$TMUX" ] ); then
   tmux -2 attach-session -t $SESSION_NAME
 fi
