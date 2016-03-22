@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 # Keybinding suggestions for .tmux.conf:
 # bind-key a set-window-option synchronize-panes
